@@ -31,6 +31,8 @@ def index():
     if request.method == 'POST':
         input_text = request.form.get('input_text', '')
         converted_text = convert_math_delimiters(input_text)
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return converted_text
     
     html_template = '''
     <!DOCTYPE html>
@@ -87,7 +89,6 @@ def index():
                 font-weight: 600;
                 color: var(--text-color);
                 margin-bottom: 10px;
-                font-family: var(--font-family);
                 letter-spacing: -0.02em;
             }
 
@@ -96,11 +97,66 @@ def index():
                 color: #86868B;
                 margin-bottom: 30px;
                 font-style: italic;
-                font-family: var(--font-family);
             }
 
             .content {
                 padding: 40px;
+            }
+
+            .features {
+                margin: 20px 0 30px;
+                padding: 20px;
+                background-color: rgba(0, 122, 255, 0.05);
+                border-radius: var(--border-radius);
+            }
+
+            .features h2 {
+                font-size: 24px;
+                font-weight: 600;
+                margin-bottom: 16px;
+                color: var(--text-color);
+            }
+
+            .features ul {
+                list-style-type: none;
+                padding: 0;
+                margin: 0;
+            }
+
+            .features li {
+                display: flex;
+                align-items: flex-start;
+                margin-bottom: 12px;
+                font-size: 16px;
+                line-height: 1.6;
+                color: #666;
+            }
+
+            .features li::before {
+                content: "•";
+                color: var(--primary-color);
+                font-weight: bold;
+                margin-right: 8px;
+            }
+
+            .example {
+                font-family: monospace;
+                background-color: #F5F5F7;
+                padding: 2px 4px;
+                border-radius: 4px;
+                color: #666;
+                user-select: none;
+                white-space: nowrap;
+            }
+
+            .preview-container {
+                display: flex;
+                gap: 20px;
+                margin-bottom: 20px;
+            }
+
+            .input-container {
+                flex: 1;
             }
 
             label {
@@ -109,7 +165,6 @@ def index():
                 font-weight: 400;
                 margin-bottom: 8px;
                 color: #86868B;
-                font-family: var(--font-family);
             }
 
             textarea {
@@ -140,7 +195,6 @@ def index():
                 font-weight: 600;
                 cursor: pointer;
                 transition: all var(--transition-speed);
-                font-family: var(--font-family);
             }
 
             button:hover {
@@ -158,38 +212,6 @@ def index():
                 border-top: 1px solid rgba(0, 0, 0, 0.1);
             }
 
-            .result h3 {
-                font-size: 18px;
-                font-weight: 500;
-                margin-bottom: 16px;
-                color: var(--text-color);
-            }
-
-            .result textarea {
-                background-color: #F5F5F7;
-                border-color: transparent;
-            }
-
-            .result textarea:focus {
-                background-color: #F5F5F7;
-                border-color: transparent;
-                box-shadow: none;
-            }
-
-            @media (max-width: 600px) {
-                body {
-                    padding: 20px 10px;
-                }
-
-                .header, .content {
-                    padding: 20px;
-                }
-
-                h1 {
-                    font-size: 24px;
-                }
-            }
-
             .result-header {
                 display: flex;
                 justify-content: space-between;
@@ -198,60 +220,10 @@ def index():
             }
 
             .result-header h3 {
-                margin: 0;
-                font-size: 18px;
-                font-weight: 500;
-                white-space: nowrap;
-            }
-
-            .features {
-                margin: 20px 0 30px;
-                padding: 20px;
-                background-color: rgba(0, 122, 255, 0.05);
-                border-radius: var(--border-radius);
-                font-family: var(--font-family);
-            }
-
-            .features h2 {
                 font-size: 24px;
                 font-weight: 600;
-                margin-bottom: 16px;
-                color: var(--text-color);
-                font-family: var(--font-family);
-            }
-
-            .features ul {
-                list-style-type: none;
-                padding: 0;
                 margin: 0;
-            }
-
-            .features li {
-                display: flex;
-                align-items: flex-start;
-                margin-bottom: 12px;
-                font-size: 16px;
-                line-height: 1.6;
-                color: #666;
-            }
-
-            .features li:before {
-                content: "•";
-                color: var(--primary-color);
-                font-weight: bold;
-                margin-right: 8px;
-            }
-
-            .features li:last-child {
-                margin-bottom: 0;
-            }
-
-            .example {
-                font-family: monospace;
-                background-color: #F5F5F7;
-                padding: 2px 4px;
-                border-radius: 4px;
-                color: #666;
+                white-space: nowrap;
             }
 
             .copy-button {
@@ -267,15 +239,7 @@ def index():
                 font-weight: 500;
                 cursor: pointer;
                 transition: all 0.2s ease;
-            }
-
-            .copy-button:hover {
-                background-color: #0066CC;
-                transform: translateY(-1px);
-            }
-
-            .copy-button:active {
-                transform: translateY(0);
+                width: auto;
             }
 
             .copy-button.success {
@@ -291,10 +255,9 @@ def index():
                 color: white;
                 padding: 8px 16px;
                 border-radius: 20px;
-                font-size: 14px;
+                font-size: 13px;
                 opacity: 0;
                 transition: opacity 0.2s ease;
-                font-family: var(--font-family);
             }
 
             .toast.show {
@@ -313,9 +276,8 @@ def index():
                 align-items: center;
                 color: #666;
                 text-decoration: none;
-                font-size: 16px;
+                font-size: 14px;
                 transition: color 0.2s ease;
-                font-family: var(--font-family);
             }
 
             .github-link:hover {
@@ -326,6 +288,24 @@ def index():
                 margin-right: 6px;
                 width: 20px;
                 height: 20px;
+            }
+
+            @media (max-width: 768px) {
+                .preview-container {
+                    flex-direction: column;
+                }
+
+                body {
+                    padding: 20px 10px;
+                }
+
+                .header, .content {
+                    padding: 20px;
+                }
+
+                h1 {
+                    font-size: 32px;
+                }
             }
         </style>
     </head>
@@ -339,25 +319,25 @@ def index():
                 <div class="features">
                     <h2>Features</h2>
                     <ul>
-                        <li>Support multiple formula formats: single <span class="example">$...$</span>, double <span class="example">$$...$$</span>, <span class="example">\[...\]</span> and <span class="example">\(...\)</span></li>
-                        <li>Auto-convert to Feishu format: <span class="example">$$formula$$</span></li>
+                        <li>Support multiple formula formats: single <code class="example">$...$</code>, double <code class="example">$$...$$</code>, <code class="example">\\[...\\]</code> and <code class="example">\\(...\\)</code></li>
+                        <li>Auto-convert to Feishu format: <code class="example">$$</code><i>formula</i><code class="example">$$</code></li>
                         <li>Smart space handling: no spaces within formulas, one space between formula and text</li>
                         <li>Auto-copy: results are automatically copied to clipboard</li>
                         <li>Batch conversion: convert multiple formulas at once</li>
                         <li>Format preservation: maintain all non-formula text formatting</li>
                     </ul>
                 </div>
-                <form id="convertForm" onsubmit="handleSubmit(event)">
-                    <div>
+                <form id="convertForm">
+                    <div class="input-container">
                         <label for="input_text">Input Markdown Text</label>
                         <textarea 
                             name="input_text" 
                             id="input_text" 
                             placeholder="Paste your Markdown text here, for example:
-hello $1233$ and \(2321\) and \[23124\]"
+hello $\\frac{1}{2}$ and \\(x^2\\) and \\[E=mc^2\\]"
                         >{{ request.form.get('input_text', '') }}</textarea>
                     </div>
-                    <button type="submit">Convert</button>
+                    <button type="button" onclick="handleConvert()">Convert</button>
                 </form>
                 <div class="result" id="result-section" style="display: {{ 'block' if converted_text else 'none' }}">
                     <div class="result-header">
@@ -379,25 +359,25 @@ hello $1233$ and \(2321\) and \[23124\]"
         <div class="toast" id="toast">Copied</div>
 
         <script>
-            function handleSubmit(event) {
-                event.preventDefault();
-                const form = event.target;
-                const formData = new FormData(form);
-
+            function handleConvert() {
+                const input = document.getElementById('input_text').value;
                 fetch('/', {
                     method: 'POST',
-                    body: formData
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
+                    body: new URLSearchParams({
+                        'input_text': input
+                    })
                 })
                 .then(response => response.text())
-                .then(html => {
-                    const parser = new DOMParser();
-                    const doc = parser.parseFromString(html, 'text/html');
-                    const newResult = doc.getElementById('result');
-                    if (newResult) {
-                        document.getElementById('result').value = newResult.value;
-                        document.getElementById('result-section').style.display = 'block';
-                        copyResult();
-                    }
+                .then(text => {
+                    const result = document.getElementById('result');
+                    const resultSection = document.getElementById('result-section');
+                    result.value = text;
+                    resultSection.style.display = 'block';
+                    copyResult();
                 })
                 .catch(error => {
                     console.error('Error:', error);
@@ -419,7 +399,7 @@ hello $1233$ and \(2321\) and \[23124\]"
                         toast.classList.remove('show');
                     }, 1500);
                 }).catch(err => {
-                    console.error('复制失败:', err);
+                    console.error('Copy failed:', err);
                 });
             }
         </script>
