@@ -36,8 +36,11 @@ def index():
     <!DOCTYPE html>
     <html>
     <head>
-        <title>Markdown公式转换器</title>
+        <title>Markdown Formula Converter</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
         <style>
             :root {
                 --primary-color: #007AFF;
@@ -46,13 +49,13 @@ def index():
                 --text-color: #1D1D1F;
                 --border-radius: 12px;
                 --transition-speed: 0.3s;
+                --font-family: 'Crimson Pro', serif;
             }
 
             * {
                 margin: 0;
                 padding: 0;
                 box-sizing: border-box;
-                font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
             }
 
             body {
@@ -61,6 +64,7 @@ def index():
                 line-height: 1.5;
                 -webkit-font-smoothing: antialiased;
                 padding: 40px 20px;
+                font-family: var(--font-family);
             }
 
             .container {
@@ -70,11 +74,6 @@ def index():
                 border-radius: var(--border-radius);
                 box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
                 overflow: hidden;
-                transition: transform var(--transition-speed);
-            }
-
-            .container:hover {
-                transform: translateY(-2px);
             }
 
             .header {
@@ -84,16 +83,20 @@ def index():
             }
 
             h1 {
-                font-size: 32px;
+                font-size: 42px;
                 font-weight: 600;
                 color: var(--text-color);
                 margin-bottom: 10px;
+                font-family: var(--font-family);
+                letter-spacing: -0.02em;
             }
 
             .subtitle {
-                font-size: 16px;
+                font-size: 20px;
                 color: #86868B;
                 margin-bottom: 30px;
+                font-style: italic;
+                font-family: var(--font-family);
             }
 
             .content {
@@ -102,10 +105,11 @@ def index():
 
             label {
                 display: block;
-                font-size: 14px;
-                font-weight: 500;
+                font-size: 16px;
+                font-weight: 400;
                 margin-bottom: 8px;
                 color: #86868B;
+                font-family: var(--font-family);
             }
 
             textarea {
@@ -121,13 +125,7 @@ def index():
                 transition: all var(--transition-speed);
                 resize: vertical;
                 margin-bottom: 20px;
-            }
-
-            textarea:focus {
-                outline: none;
-                border-color: var(--primary-color);
-                box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.1);
-                background-color: var(--surface-color);
+                font-family: var(--font-family);
             }
 
             button {
@@ -139,9 +137,10 @@ def index():
                 border: none;
                 border-radius: var(--border-radius);
                 font-size: 16px;
-                font-weight: 500;
+                font-weight: 600;
                 cursor: pointer;
                 transition: all var(--transition-speed);
+                font-family: var(--font-family);
             }
 
             button:hover {
@@ -191,69 +190,18 @@ def index():
                 }
             }
 
-            .copy-button {
-                display: inline-flex;
-                align-items: center;
-                justify-content: center;
-                padding: 8px 16px;
-                background-color: var(--surface-color);
-                color: var(--primary-color);
-                border: 1px solid var(--primary-color);
-                border-radius: var(--border-radius);
-                font-size: 14px;
-                font-weight: 500;
-                cursor: pointer;
-                transition: all var(--transition-speed);
-                margin-top: 12px;
-            }
-
-            .copy-button:hover {
-                background-color: rgba(0, 122, 255, 0.1);
-            }
-
-            .copy-button:active {
-                background-color: rgba(0, 122, 255, 0.2);
-            }
-
-            .copy-button.success {
-                background-color: #34C759;
-                color: white;
-                border-color: #34C759;
-            }
-
-            .copy-feedback {
-                position: fixed;
-                top: 20px;
-                left: 50%;
-                transform: translateX(-50%);
-                background-color: rgba(52, 199, 89, 0.9);
-                color: white;
-                padding: 12px 24px;
-                border-radius: var(--border-radius);
-                font-size: 14px;
-                font-weight: 500;
-                opacity: 0;
-                transition: opacity var(--transition-speed);
-                pointer-events: none;
-                z-index: 1000;
-            }
-
-            .copy-feedback.show {
-                opacity: 1;
-            }
-
             .result-header {
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
                 margin-bottom: 16px;
-                white-space: nowrap;
             }
 
             .result-header h3 {
                 margin: 0;
                 font-size: 18px;
                 font-weight: 500;
+                white-space: nowrap;
             }
 
             .features {
@@ -261,13 +209,15 @@ def index():
                 padding: 20px;
                 background-color: rgba(0, 122, 255, 0.05);
                 border-radius: var(--border-radius);
+                font-family: var(--font-family);
             }
 
             .features h2 {
-                font-size: 18px;
-                font-weight: 500;
+                font-size: 24px;
+                font-weight: 600;
                 margin-bottom: 16px;
                 color: var(--text-color);
+                font-family: var(--font-family);
             }
 
             .features ul {
@@ -280,7 +230,7 @@ def index():
                 display: flex;
                 align-items: flex-start;
                 margin-bottom: 12px;
-                font-size: 14px;
+                font-size: 16px;
                 line-height: 1.6;
                 color: #666;
             }
@@ -303,86 +253,174 @@ def index():
                 border-radius: 4px;
                 color: #666;
             }
+
+            .copy-button {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                padding: 6px 12px;
+                background-color: var(--primary-color);
+                color: white;
+                border: none;
+                border-radius: var(--border-radius);
+                font-size: 13px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.2s ease;
+            }
+
+            .copy-button:hover {
+                background-color: #0066CC;
+                transform: translateY(-1px);
+            }
+
+            .copy-button:active {
+                transform: translateY(0);
+            }
+
+            .copy-button.success {
+                background-color: #34C759;
+            }
+
+            .toast {
+                position: fixed;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: rgba(0, 0, 0, 0.8);
+                color: white;
+                padding: 8px 16px;
+                border-radius: 20px;
+                font-size: 14px;
+                opacity: 0;
+                transition: opacity 0.2s ease;
+                font-family: var(--font-family);
+            }
+
+            .toast.show {
+                opacity: 1;
+            }
+
+            .footer {
+                text-align: center;
+                padding: 20px;
+                margin-top: 40px;
+                border-top: 1px solid rgba(0, 0, 0, 0.1);
+            }
+
+            .github-link {
+                display: inline-flex;
+                align-items: center;
+                color: #666;
+                text-decoration: none;
+                font-size: 16px;
+                transition: color 0.2s ease;
+                font-family: var(--font-family);
+            }
+
+            .github-link:hover {
+                color: var(--primary-color);
+            }
+
+            .github-link svg {
+                margin-right: 6px;
+                width: 20px;
+                height: 20px;
+            }
         </style>
     </head>
     <body>
         <div class="container">
             <div class="header">
-                <h1>Markdown公式转换器</h1>
-                <div class="subtitle">将普通Markdown公式转换为飞书兼容格式</div>
+                <h1>Markdown Formula Converter</h1>
+                <div class="subtitle">Convert Markdown formulas to Feishu compatible format</div>
             </div>
             <div class="content">
                 <div class="features">
-                    <h2>功能说明</h2>
+                    <h2>Features</h2>
                     <ul>
-                        <li>支持多种公式格式转换：单个<span class="example">$...$</span>、双<span class="example">$$...$$</span>、<span class="example">\[...\]</span>和<span class="example">\(...\)</span></li>
-                        <li>自动统一转换为飞书支持的格式：<span class="example">$$公式$$</span></li>
-                        <li>智能处理空格：公式内部无空格，公式与文本之间保持一个空格</li>
-                        <li>自动复制：转换后的结果会自动复制到剪贴板</li>
-                        <li>支持批量转换：可一次性转换多个公式</li>
-                        <li>保持原文格式：除公式外的其他文本格式保持不变</li>
+                        <li>Support multiple formula formats: single <span class="example">$...$</span>, double <span class="example">$$...$$</span>, <span class="example">\[...\]</span> and <span class="example">\(...\)</span></li>
+                        <li>Auto-convert to Feishu format: <span class="example">$$formula$$</span></li>
+                        <li>Smart space handling: no spaces within formulas, one space between formula and text</li>
+                        <li>Auto-copy: results are automatically copied to clipboard</li>
+                        <li>Batch conversion: convert multiple formulas at once</li>
+                        <li>Format preservation: maintain all non-formula text formatting</li>
                     </ul>
                 </div>
-                <form method="POST">
+                <form id="convertForm" onsubmit="handleSubmit(event)">
                     <div>
-                        <label for="input_text">输入Markdown文本</label>
+                        <label for="input_text">Input Markdown Text</label>
                         <textarea 
                             name="input_text" 
                             id="input_text" 
-                            placeholder="在这里粘贴您的Markdown文本，例如：
+                            placeholder="Paste your Markdown text here, for example:
 hello $1233$ and \(2321\) and \[23124\]"
                         >{{ request.form.get('input_text', '') }}</textarea>
                     </div>
-                    <button type="submit">转换</button>
+                    <button type="submit">Convert</button>
                 </form>
-                {% if converted_text %}
-                <div class="result">
+                <div class="result" id="result-section" style="display: {{ 'block' if converted_text else 'none' }}">
                     <div class="result-header">
-                        <h3>转换结果</h3>
-                        <button class="copy-button" onclick="copyResult()">
-                            复制结果
-                        </button>
+                        <h3>Result</h3>
+                        <button class="copy-button" onclick="copyResult()">Copy</button>
                     </div>
                     <textarea id="result" readonly>{{ converted_text }}</textarea>
                 </div>
-                {% endif %}
+            </div>
+            <div class="footer">
+                <a href="https://github.com/ChennoShen239/FeishuConvert" class="github-link" target="_blank">
+                    <svg viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                    </svg>
+                    View Source on GitHub
+                </a>
             </div>
         </div>
-        <div class="copy-feedback" id="copyFeedback">已复制到剪贴板</div>
+        <div class="toast" id="toast">Copied</div>
 
         <script>
-            function copyResult() {
-                const resultText = document.getElementById('result');
-                const copyButton = document.querySelector('.copy-button');
-                const feedback = document.getElementById('copyFeedback');
-                
-                // 选择文本
-                resultText.select();
-                
-                // 复制到剪贴板
-                navigator.clipboard.writeText(resultText.value).then(() => {
-                    // 显示成功状态
-                    copyButton.classList.add('success');
-                    copyButton.textContent = '复制成功';
-                    feedback.classList.add('show');
-                    
-                    // 3秒后恢复原状
-                    setTimeout(() => {
-                        copyButton.classList.remove('success');
-                        copyButton.textContent = '复制结果';
-                        feedback.classList.remove('show');
-                    }, 3000);
-                }).catch(err => {
-                    console.error('复制失败:', err);
+            function handleSubmit(event) {
+                event.preventDefault();
+                const form = event.target;
+                const formData = new FormData(form);
+
+                fetch('/', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const newResult = doc.getElementById('result');
+                    if (newResult) {
+                        document.getElementById('result').value = newResult.value;
+                        document.getElementById('result-section').style.display = 'block';
+                        copyResult();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
                 });
             }
 
-            // 如果存在转换结果，自动复制
-            window.onload = function() {
+            function copyResult() {
                 const resultText = document.getElementById('result');
-                if (resultText) {
-                    copyResult();
-                }
+                const copyButton = document.querySelector('.copy-button');
+                const toast = document.getElementById('toast');
+                
+                resultText.select();
+                navigator.clipboard.writeText(resultText.value).then(() => {
+                    copyButton.classList.add('success');
+                    toast.classList.add('show');
+                    
+                    setTimeout(() => {
+                        copyButton.classList.remove('success');
+                        toast.classList.remove('show');
+                    }, 1500);
+                }).catch(err => {
+                    console.error('复制失败:', err);
+                });
             }
         </script>
     </body>
