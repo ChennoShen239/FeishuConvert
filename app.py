@@ -4,24 +4,25 @@ import regex as re
 app = Flask(__name__)
 
 def convert_math_delimiters(text):
-    # 匹配所有可能的数学公式格式并保持公式内容不变
-    patterns = [
-        (r'\$([^\$]+?)\$', lambda m: f' $${m.group(1).strip()}$$ '),  # 单$
-        (r'\$\$([^\$]+?)\$\$', lambda m: f' $${m.group(1).strip()}$$ '),  # 双$
-        (r'\\\[(.*?)\\\]', lambda m: f' $${m.group(1).strip()}$$ '),  # \[ \]
-        (r'\\\((.*?)\\\)', lambda m: f' $${m.group(1).strip()}$$ ')  # \( \)
-    ]
+    # 先处理已经是$$包围的公式，标记它们以防止后续处理
+    def protect_existing_double_dollars(match):
+        return f'PROTECTED_DOUBLE_DOLLAR{match.group(1)}PROTECTED_DOUBLE_DOLLAR'
     
-    for pattern, replacement in patterns:
-        text = re.sub(pattern, replacement, text)
+    text = re.sub(r'\$\$(.*?)\$\$', protect_existing_double_dollars, text)
+    
+    # 处理其他格式
+    text = re.sub(r'\\\[(.*?)\\\]', r' $$\1$$ ', text)
+    text = re.sub(r'\\\((.*?)\\\)', r' $$\1$$ ', text)
+    text = re.sub(r'\$([^\$]+?)\$', r' $$\1$$ ', text)
+    
+    # 恢复被保护的公式
+    text = text.replace('PROTECTED_DOUBLE_DOLLAR', '$$')
     
     # 处理多余的空格
-    # 1. 处理连续空格
-    text = re.sub(r'\s+', ' ', text)
-    
-    # 2. 确保$$与普通文本之间只有一个空格
-    text = re.sub(r'\s+\$\$', ' $$', text)
-    text = re.sub(r'\$\$\s+', '$$ ', text)
+    text = re.sub(r'\s+', ' ', text)  # 将多个空格合并为一个
+    text = re.sub(r'\s*\$\$\s*', '$$', text)  # 移除$$周围的空格
+    text = re.sub(r'([^\s])\$\$', r'\1 $$', text)  # 确保$$左侧有空格
+    text = re.sub(r'\$\$([^\s])', r'$$ \1', text)  # 确保$$右侧有空格
     
     return text.strip()
 
