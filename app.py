@@ -8,23 +8,33 @@ def convert_math_delimiters(text):
     def protect_existing_double_dollars(match):
         return f'PROTECTED_DOUBLE_DOLLAR{match.group(1)}PROTECTED_DOUBLE_DOLLAR'
     
-    text = re.sub(r'\$\$(.*?)\$\$', protect_existing_double_dollars, text)
+    # 将文本分割成行
+    lines = text.split('\n')
+    processed_lines = []
     
-    # 处理其他格式
-    text = re.sub(r'\\\[(.*?)\\\]', r' $$\1$$ ', text)
-    text = re.sub(r'\\\((.*?)\\\)', r' $$\1$$ ', text)
-    text = re.sub(r'\$([^\$]+?)\$', r' $$\1$$ ', text)
+    for line in lines:
+        if line.strip():  # 只处理非空行
+            # 处理已有的$$公式
+            line = re.sub(r'\$\$(.*?)\$\$', protect_existing_double_dollars, line)
+            
+            # 处理其他格式
+            line = re.sub(r'\\\[(.*?)\\\]', r' $$\1$$ ', line)
+            line = re.sub(r'\\\((.*?)\\\)', r' $$\1$$ ', line)
+            line = re.sub(r'\$([^\$]+?)\$', r' $$\1$$ ', line)
+            
+            # 恢复被保护的公式
+            line = line.replace('PROTECTED_DOUBLE_DOLLAR', '$$')
+            
+            # 处理多余的空格
+            line = re.sub(r'\s+', ' ', line)  # 将多个空格合并为一个
+            line = re.sub(r'\s*\$\$\s*', '$$', line)  # 移除$$周围的空格
+            line = re.sub(r'([^\s])\$\$', r'\1 $$', line)  # 确保$$左侧有空格
+            line = re.sub(r'\$\$([^\s])', r'$$ \1', line)  # 确保$$右侧有空格
+            
+            processed_lines.append(line.strip())
     
-    # 恢复被保护的公式
-    text = text.replace('PROTECTED_DOUBLE_DOLLAR', '$$')
-    
-    # 处理多余的空格
-    text = re.sub(r'\s+', ' ', text)  # 将多个空格合并为一个
-    text = re.sub(r'\s*\$\$\s*', '$$', text)  # 移除$$周围的空格
-    text = re.sub(r'([^\s])\$\$', r'\1 $$', text)  # 确保$$左侧有空格
-    text = re.sub(r'\$\$([^\s])', r'$$ \1', text)  # 确保$$右侧有空格
-    
-    return text.strip()
+    # 使用换行符连接处理后的行
+    return '\n'.join(processed_lines)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
