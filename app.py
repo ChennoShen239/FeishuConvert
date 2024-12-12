@@ -17,10 +17,10 @@ def convert_math_delimiters(text):
             # 处理已有的$$公式
             line = re.sub(r'\$\$(.*?)\$\$', protect_existing_double_dollars, line)
             
-            # 处理其他格式
-            line = re.sub(r'\\\[(.*?)\\\]', r' $$\1$$ ', line)
-            line = re.sub(r'\\\((.*?)\\\)', r' $$\1$$ ', line)
-            line = re.sub(r'\$([^\$]+?)\$', r' $$\1$$ ', line)
+            # 处理其他格式，注意处理顺序
+            line = re.sub(r'\\\[(.*?)\\\]', r'$$ \1 $$', line)  # 处理\[...\]
+            line = re.sub(r'\\\((.*?)\\\)', r'$$ \1 $$', line)  # 处理\(...\)
+            line = re.sub(r'(?<!\$)\$(?!\$)([^\$]+?)(?<!\$)\$(?!\$)', r'$$ \1 $$', line)  # 处理单个$，确保不匹配$$
             
             # 恢复被保护的公式
             line = line.replace('PROTECTED_DOUBLE_DOLLAR', '$$')
