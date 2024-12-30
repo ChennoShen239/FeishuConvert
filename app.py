@@ -4,37 +4,39 @@ import regex as re
 app = Flask(__name__)
 
 def convert_math_delimiters(text):
-    # 先处理已经是$$包围的公式，标记它们以防止后续处理
-    def protect_existing_double_dollars(match):
-        return f'PROTECTED_DOUBLE_DOLLAR{match.group(1)}PROTECTED_DOUBLE_DOLLAR'
-    
-    # 将文本分割成行
-    lines = text.split('\n')
-    processed_lines = []
-    
-    for line in lines:
-        if line.strip():  # 只处理非空行
-            # 处理已有的$$公式
-            line = re.sub(r'\$\$(.*?)\$\$', protect_existing_double_dollars, line)
-            
-            # 处理其他格式，注意处理顺序
-            line = re.sub(r'\\\[(.*?)\\\]', r'$$ \1 $$', line)  # 处理\[...\]
-            line = re.sub(r'\\\((.*?)\\\)', r'$$ \1 $$', line)  # 处理\(...\)
-            line = re.sub(r'(?<!\$)\$(?!\$)([^\$]+?)(?<!\$)\$(?!\$)', r'$$ \1 $$', line)  # 处理单个$，确保不匹配$$
-            
-            # 恢复被保护的公式
-            line = line.replace('PROTECTED_DOUBLE_DOLLAR', '$$')
-            
-            # 处理多余的空格
-            line = re.sub(r'\s+', ' ', line)  # 将多个空格合并为一个
-            line = re.sub(r'\s*\$\$\s*', '$$', line)  # 移除$$周围的空格
-            line = re.sub(r'([^\s])\$\$', r'\1 $$', line)  # 确保$$左侧有空格
-            line = re.sub(r'\$\$([^\s])', r'$$ \1', line)  # 确保$$右侧有空格
-            
-            processed_lines.append(line.strip())
-    
-    # 使用换行符连接处理后的行
-    return '\n'.join(processed_lines)
+    def replace_match(match):
+        formula = match.group(1)
+        return f"$${formula}$$"
+
+    # 保护已有的$$公式
+    text = re.sub(r"\$\$([^\$]+)\$\$", lambda m: f"__DOUBLE_DOLLAR_{m.group(1)}_END_DOUBLE_DOLLAR__", text)
+
+    # 转换各种公式定界符
+    text = re.sub(r"(?<!\$)\$([^\$]+?)\$(?!\$)", replace_match, text)
+    text = re.sub(r"\\\[(.*?)\\\]", replace_match, text)
+    text = re.sub(r"\\\((.*?)\\\)", replace_match, text)
+
+    # 恢复被保护的$$公式
+    text = text.replace("__DOUBLE_DOLLAR_", "$$").replace("_END_DOUBLE_DOLLAR__", "$$")
+
+    result = ""
+    in_math = False
+    for part in re.split(r"(\$\$.*?\$\$)", text):
+        if part.startswith("$$") and part.endswith("$$"):
+            if result and not result.endswith(" ") and not in_math and not result.endswith(tuple([",", ".", ";", "!", "?"])):
+                result += " "
+            result += part
+            in_math = True
+        elif part:
+            part = part.strip()
+            if result and part and not result.endswith(" ") and not result.endswith(tuple([",", ".", ";", "!", "?"])):
+              if in_math:
+                result += " "
+              elif not part.startswith(tuple([",", ".", ";", "!", "?"])):
+                result += " "
+            result += part
+            in_math = False
+    return result.strip()
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
