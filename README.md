@@ -1,5 +1,7 @@
 # FeishuConvert
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 A web-based tool that converts various formats of mathematical formulas in Markdown to Feishu (飞书) compatible format.
 
 ## Overview

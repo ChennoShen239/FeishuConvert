@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 def convert_math_delimiters(text):
     def replace_match(match):
-        formula = match.group(1)
+        formula = match.group(1).strip()
         return f"$${formula}$$"
 
     # 保护已有的$$公式
@@ -13,7 +13,7 @@ def convert_math_delimiters(text):
 
     # 转换各种公式定界符
     text = re.sub(r"(?<!\$)\$([^\$]+?)\$(?!\$)", replace_match, text)
-    text = re.sub(r"\\\[(.*?)\\\]", replace_match, text)
+    text = re.sub(r"\\\[(.*?)\\\]", replace_match, text, flags=re.DOTALL)
     text = re.sub(r"\\\((.*?)\\\)", replace_match, text)
 
     # 恢复被保护的$$公式
@@ -28,16 +28,19 @@ def convert_math_delimiters(text):
             result += part
             in_math = True
         elif part:
-            part = part.strip()
-            if result and part and not result.endswith(" ") and not result.endswith(tuple([",", ".", ";", "!", "?"])):
-              if in_math:
-                result += " "
-              elif not part.startswith(tuple([",", ".", ";", "!", "?"])):
-                result += " "
-            result += part
+            lines = part.splitlines()
+            non_empty_lines = [line.strip() for line in lines if line.strip()]
+            cleaned_part = "\n".join(non_empty_lines)
+            cleaned_part = cleaned_part.strip()
+            if cleaned_part: # 如果处理后的部分不为空
+                if result and cleaned_part and not result.endswith(" ") and not result.endswith(tuple([",", ".", ";", "!", "?"])):
+                  if in_math:
+                    result += " "
+                  elif not cleaned_part.startswith(tuple([",", ".", ";", "!", "?"])):
+                    result += " "
+                result += cleaned_part
             in_math = False
     return result.strip()
-
 @app.route('/', methods=['GET', 'POST'])
 def index():
     converted_text = ''
