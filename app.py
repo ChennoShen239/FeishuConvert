@@ -29,23 +29,43 @@ def convert_math_delimiters(text):
 
     result = ""
     in_math = False
-    for part in re.split(r"(\$\$.*?\$\$)", text):
+    parts = re.split(r"(\$\$.*?\$\$)", text)
+    
+    for i, part in enumerate(parts):
         if part.startswith("$$") and part.endswith("$$"):
             if result and not result.endswith(" ") and not in_math and not result.endswith(tuple([",", ".", ";", "!", "?"])):
                 result += " "
             result += part
+            
+            # 检查下一个非空部分
+            next_non_empty = ""
+            next_same_line = False
+            if i + 1 < len(parts):
+                next_lines = parts[i + 1].splitlines()
+                # 如果下一部分的第一行非空，说明在同一行
+                if next_lines and next_lines[0].strip():
+                    next_non_empty = next_lines[0].strip()
+                    next_same_line = True
+                # 否则找第一个非空行
+                else:
+                    non_empty_lines = [line.strip() for line in next_lines if line.strip()]
+                    if non_empty_lines:
+                        next_non_empty = non_empty_lines[0]
+            
+            # 只有当不在同一行，且下一个非空内容不是标点符号时，才添加换行
+            if not next_same_line and not (next_non_empty and next_non_empty.startswith(tuple([",", ".", ";", "!", "?"]))) and not result.endswith("\n"):
+                result += "\n"
             in_math = True
         elif part:
             lines = part.splitlines()
-            non_empty_lines = [line.strip() for line in lines if line.strip()]
+            non_empty_lines = [line.strip() for line in lines if line.strip()]  # 只保留非空行
             cleaned_part = "\n".join(non_empty_lines)
-            cleaned_part = cleaned_part.strip()
-            if cleaned_part: # 如果处理后的部分不为空
+            if cleaned_part:  # 如果处理后的部分不为空
                 if result and cleaned_part and not result.endswith(" ") and not result.endswith(tuple([",", ".", ";", "!", "?"])):
-                  if in_math:
-                    result += " "
-                  elif not cleaned_part.startswith(tuple([",", ".", ";", "!", "?"])):
-                    result += " "
+                    if in_math:
+                        result += " "
+                    elif not cleaned_part.startswith(tuple([",", ".", ";", "!", "?"])):
+                        result += " "
                 result += cleaned_part
             in_math = False
     return result.strip()
