@@ -23,9 +23,7 @@ cd FeishuConvert
 uv sync
 
 # Run
-uv run python app.py
-# or
-python app.py
+uv run app.py
 ```
 
 Access at `http://127.0.0.1:3000`
@@ -33,11 +31,13 @@ Access at `http://127.0.0.1:3000`
 ## Example
 
 **Input:**
+
 ```
 $\alpha$ and \[\beta(1-\theta)\alpha f^{\prime}(k^d)=1\]
 ```
 
 **Output:**
+
 ```
 $$ \alpha $$ and $$ \beta(1-\theta)\alpha f^{\prime}(k^d)=1 $$
 ```
@@ -47,7 +47,7 @@ $$ \alpha $$ and $$ \beta(1-\theta)\alpha f^{\prime}(k^d)=1 $$
 - **Backend:** Flask 3.0.0
 - **Regex:** regex 2023.10.3 (full regex support)
 - **Package Manager:** uv
-- **Python:** ≥3.8
+- **Python:** $≥3.8$
 
 ## Implementation
 
@@ -55,7 +55,3 @@ $$ \alpha $$ and $$ \beta(1-\theta)\alpha f^{\prime}(k^d)=1 $$
 - Smart whitespace handling (preserves spacing, removes empty lines)
 - Batch processing support
 - Auto-copy to clipboard via Web API
-
-## License
-
-MIT
