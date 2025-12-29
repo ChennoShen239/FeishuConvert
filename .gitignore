@@ -24,6 +24,11 @@ wheels/
 # Virtual Environment
 venv/
 ENV/
+.venv/
+
+# uv
+.uv/
+uv.lock
 
 # IDE
 .idea/

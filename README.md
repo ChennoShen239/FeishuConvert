@@ -33,19 +33,38 @@ FeishuConvert is designed to streamline the process of writing mathematical form
 ### Prerequisites
 
 - Python 3.8 or higher
-- pip (Python package installer)
+- [uv](https://github.com/astral-sh/uv) - Fast Python package installer and resolver
 
 ### Setup
 
-1. Clone the repository
+1. Install uv (if not already installed)
+```bash
+# On macOS and Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# On Windows
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+# Or via pip
+pip install uv
+```
+
+2. Clone the repository
 ```bash
 git clone https://github.com/ChennoShen239/FeishuConvert.git
 cd FeishuConvert
 ```
 
-2. Install dependencies
+3. Create a virtual environment and install dependencies
 ```bash
-pip install -r requirements.txt
+uv venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+uv pip install -e .
+```
+
+Alternatively, you can use uv to run the app directly without activating the virtual environment:
+```bash
+uv run python app.py
 ```
 
 ## Usage
@@ -86,6 +105,10 @@ $$ \beta(1-\theta)\alpha f^{\prime}(k^d)=1 $$
 
 - Flask 3.0.0 - Web framework
 - regex 2023.10.3 - Enhanced regular expression support
+
+### Project Management
+
+This project uses [uv](https://github.com/astral-sh/uv) for fast and reliable dependency management. The project configuration is defined in `pyproject.toml`.
 
 ### Browser Support
 

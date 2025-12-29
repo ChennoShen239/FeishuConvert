@@ -1,6 +1,6 @@
-# FeishuConvert - Markdown公式转换器
+# FeishuConvert - Markdown 公式转换器
 
-一个简单而强大的工具，用于将各种格式的Markdown数学公式转换为飞书文档支持的格式。
+一个简单而强大的工具，用于将各种格式的 Markdown 数学公式转换为飞书文档支持的格式。
 
 [English](README.md)
 
@@ -11,8 +11,8 @@
 - 🔄 支持多种公式格式转换
   - 单美元符号：`$...$`
   - 双美元符号：`$$...$$`
-  - LaTeX方括号：`\[...\]`
-  - LaTeX圆括号：`\(...\)`
+  - LaTeX 方括号：`\[...\]`
+  - LaTeX 圆括号：`\(...\)`
 - ✨ 自动统一转换为飞书支持的格式：`$$公式$$`
 - 🎯 智能处理空格
   - 公式内部无空格
@@ -25,25 +25,43 @@
 
 ### 环境要求
 
-- Python 3.6+
-- pip（Python包管理器）
+- Python 3.8 或更高版本
+- [uv](https://github.com/astral-sh/uv) - 快速的 Python 包安装器和解析器
 
 ### 安装步骤
 
-1. 克隆仓库：
+1. 安装 uv（如果尚未安装）
+
+```bash
+# macOS 和 Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Windows
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+
+# 或通过 pip 安装
+pip install uv
+```
+
+2. 克隆仓库：
+
 ```bash
 git clone https://github.com/ChennoShen239/FeishuConvert.git
 cd FeishuConvert
 ```
 
-2. 安装依赖：
+3. 创建虚拟环境并安装依赖：
+
 ```bash
-pip install -r requirements.txt
+uv venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+uv pip install -e .
 ```
 
-3. 运行应用：
+或者，您可以直接使用 uv 运行应用，无需激活虚拟环境：
+
 ```bash
-python app.py
+uv run python app.py
 ```
 
 4. 在浏览器中访问：`http://localhost:3000`
@@ -51,11 +69,13 @@ python app.py
 ### 使用示例
 
 输入：
+
 ```
 hello $\frac{1}{2}$ and \(x^2\) and \[E=mc^2\]
 ```
 
 输出：
+
 ```
 hello $$\frac{1}{2}$$ and $$x^2$$ and $$E=mc^2$$
 ```
@@ -65,13 +85,15 @@ hello $$\frac{1}{2}$$ and $$x^2$$ and $$E=mc^2$$
 - 后端：Flask (Python)
 - 前端：原生 HTML/CSS/JavaScript
 - 样式：采用苹果设计风格
+- 包管理：uv（快速可靠的依赖管理工具）
 
 ## 项目结构
 
 ```
 FeishuConvert/
 ├── app.py              # 主应用文件
-├── requirements.txt    # 项目依赖
+├── pyproject.toml      # 项目配置和依赖（uv）
+├── requirements.txt    # 项目依赖（兼容性保留）
 ├── README.md          # 文档（英文）
 ├── README_zh.md       # 文档（中文）
 └── LICENSE            # MIT许可证
@@ -80,7 +102,7 @@ FeishuConvert/
 ## 开发计划
 
 - [ ] 添加更多公式格式支持
-- [ ] 提供API接口
+- [ ] 提供 API 接口
 - [ ] 添加批量文件处理功能
 - [ ] 支持自定义转换规则
 - [ ] 添加暗色主题
@@ -95,4 +117,4 @@ FeishuConvert/
 
 ## 许可证
 
-本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情 
+本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情

@@ -1,0 +1,43 @@
+[project]
+name = "feishuconvert"
+version = "1.0.0"
+description = "A web-based tool that converts various formats of mathematical formulas in Markdown to Feishu compatible format"
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "Chen Gao", email = ""}
+]
+keywords = ["feishu", "markdown", "formula", "latex", "converter"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+]
+
+dependencies = [
+    "flask>=3.0.0",
+    "regex>=2023.10.3",
+]
+
+[project.optional-dependencies]
+dev = []
+
+[project.urls]
+Homepage = "https://github.com/ChennoShen239/FeishuConvert"
+Repository = "https://github.com/ChennoShen239/FeishuConvert"
+Issues = "https://github.com/ChennoShen239/FeishuConvert/issues"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["feishuconvert"]
+
